@@ -1,5 +1,5 @@
 ======================================================================
- FAPB 1.1 —— Counter-Strike 1.6 第三方人机
+ FAPB 1.2 —— Counter-Strike 1.6 第三方人机
  核心：YAPB 2.55b（枪法 / 瞄准 / 行为逻辑完整保留）
 ======================================================================
 
@@ -73,6 +73,8 @@ rcon 执行 fapb cmenu。修改口令后记得同步修改 fb_password。
 
   【AMXX 队伍管理菜单】
   fapb_teams        打开独立的队伍管理菜单（控制台）
+  fapb_bind [键]    绑定快捷键（默认 V），例如 fapb_bind v / fapb_bind =
+  fapb_unbind [键]  解绑快捷键（默认 V）
   say /fapbteams    聊天打开菜单
   amx_fapb_teams    服务器控制台 / rcon，打印双方 Bot 列表
 
@@ -87,6 +89,7 @@ rcon 执行 fapb cmenu。修改口令后记得同步修改 fb_password。
     快速填充双方（fapb fill）
     踢出全部 Bot（fapb kickall）
     交换 T/CT（fapb swap）
+    快捷键设置（绑定/解绑 V、N、= 键）
 
   权限 Cvar：
     fapb_teams_access 1   1 = 仅 ADMIN_MENU 管理员（默认）
@@ -187,7 +190,7 @@ A: 会。默认值就是 YAPB 2.55b 的原始瞄准参数；除非明确知道�
 
 九、版本与来源
 ----------------------------------------------------------------------
-FAPB 1.1
+FAPB 1.2
 核心版本：YAPB 2.55b（YaPB Dev Team，基于 PODBot 代码）
 制作方式：从 yapb.zip 的 yapb.dll 解包，重命名插件/命令/Cvar/路径，
           重建 PE 与重定位表；未改动 AI、瞄准、行为代码。

@@ -66,6 +66,8 @@ bind "=" "fapb_menu"
 |---|---|
 | `fapb_teams` | 玩家控制台打开队伍管理菜单 |
 | `fapb_team` | 同上（别名） |
+| `fapb_bind [键]` | 绑定快捷键到 `fapb_teams`，默认 `v`；例如 `fapb_bind v`、`fapb_bind =` |
+| `fapb_unbind [键]` | 解绑快捷键，默认 `v` |
 | `say /fapbteams` | 聊天打开菜单 |
 | `amx_fapb_teams` | 服务器控制台 / rcon，打印双方 Bot 列表 |
 
@@ -89,6 +91,14 @@ fapb_teams_access 1   ; 1 = ADMIN_MENU 管理员（默认），0 = 所有玩家
 - 快速填充双方（`fapb fill`）
 - 踢出全部 Bot（`fapb kickall`）
 - 交换 T/CT（`fapb swap`）
+- 快捷键设置（绑定/解绑 V、N、= 键）
+
+快捷键绑定只影响执行命令的玩家本人，不会改服务器或其他玩家的
+`config.cfg`。也可以直接在客户端控制台执行：
+
+```text
+bind v fapb_teams
+```
 
 > 该插件只调用 `fapb` 服务器命令，不修改 FAPB 的 AI 或瞄准参数。
 

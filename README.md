@@ -18,7 +18,7 @@
 - **独立菜单**：`fapb cmenu`、`fapb wp menu`，菜单文字与标题均为 FAPB。
 - **独立配置/航点**：`addons/fapb/config/`、`addons/fapb/wptdefault/`。
 - **独立队伍管理菜单**：`fapb_teams`（AMXX 伴侣插件），T/CT 分队列管理、
-  添加/踢出/杀死 Bot、查看列表、填充、交换队伍。
+  添加/踢出/杀死 Bot、查看列表、填充、交换队伍，支持菜单内绑定快捷键。
 - **可与 YAPB / SYPB 共存安装**：不覆盖对方文件，命令/Cvar 命名空间隔离。
 
 > 运行层面同一时间只能启用一套 Bot 核心（FAPB、YAPB、SYPB 任选其一）。
@@ -30,7 +30,7 @@
 
 ### 方式 A：完整包（推荐）
 
-从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.1.zip**，解压后把 `fapb` 文件夹放到：
+从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.2.zip**，解压后把 `fapb` 文件夹放到：
 
 ```text
 <游戏根目录>\cstrike\addons\fapb
@@ -116,6 +116,8 @@ fb_password     "thebot"
 
 ```text
 fapb_teams         玩家控制台打开
+fapb_bind [键]     绑定快捷键（默认 V），例如 fapb_bind v / fapb_bind =
+fapb_unbind [键]   解绑快捷键（默认 V）
 say /fapbteams     聊天打开
 amx_fapb_teams     服务器控制台 / rcon，打印双方 Bot 列表
 ```
@@ -134,6 +136,7 @@ amx_fapb_teams     服务器控制台 / rcon，打印双方 Bot 列表
 - **快速填充双方**（`fapb fill`）
 - **踢出全部 Bot**（`fapb kickall`）
 - **交换 T/CT**（`fapb swap`）
+- **快捷键设置**：菜单内绑定/解绑 V、N、= 键；也可用 `fapb_bind <键>` 自定义
 
 权限 Cvar：
 
@@ -219,7 +222,7 @@ tools/                 二进制级构建工具与原始 YAPB 样本
 docs/COMMANDS.md       命令 / Cvar 参考
 ```
 
-完整航点包在 Release 的 `FAPB_1.1.zip` 中。
+完整航点包在 Release 的 `FAPB_1.2.zip` 中。
 
 ---
 

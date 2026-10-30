@@ -1,4 +1,4 @@
-﻿FAPB Team Menu (AMX Mod X)
+FAPB Team Menu (AMX Mod X)
 ==========================
 
 这是 FAPB 的独立队伍管理菜单，插件本身不改 FAPB/YAPB 的 AI，
@@ -15,6 +15,8 @@
 命令
 ----
   fapb_teams        玩家控制台打开菜单
+  fapb_bind [键]    绑定快捷键（默认 V），例如 fapb_bind v / fapb_bind =
+  fapb_unbind [键]  解绑快捷键（默认 V）
   say /fapbteams    聊天打开菜单
   amx_fapb_teams    服务器控制台 / rcon（打印双方 Bot 列表）
 
@@ -38,6 +40,9 @@ Cvar
   快速填充双方 (fapb fill)
   踢出全部 Bot (fapb kickall)
   交换 T/CT (fapb swap)
+  快捷键设置 (Hotkey)
+    绑定 V / N / = 键
+    解绑 V / N / = 键
 
 编译信息
 --------

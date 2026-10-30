@@ -1,5 +1,5 @@
 ======================================================================
- FAPB 1.4 —— Counter-Strike 1.6 第三方人机
+ FAPB 1.5 —— Counter-Strike 1.6 第三方人机
  核心：YAPB 2.55b（枪法 / 瞄准 / 行为逻辑完整保留）
 ======================================================================
 
@@ -15,7 +15,8 @@ FAPB 是把 yapb.zip 中的 YAPB 2.55b 核心完整保留下来，重新命名�
 
 独立命名空间：
   主命令        fapb         （兼容旧短命令 fb）
-  控制菜单      fapb cmenu   （快捷别名 fapb_menu）
+  主菜单        fapb menu    （快捷别名 fapb_menu）
+  控制菜单      fapb cmenu
   所有 Cvar     fb_*         （例如 fb_quota、fb_minskill）
   配置目录      addons/fapb/config/
   航点目录      addons/fapb/wptdefault/
@@ -56,8 +57,9 @@ cstrike/addons/fapb/
 
 四、独立命令菜单
 ----------------------------------------------------------------------
-  fapb cmenu        打开 FAPB 控制菜单（推荐）
+  fapb menu         打开 FAPB 主菜单（推荐，数字菜单）
   fapb_menu         同上（fapb.cfg 中定义的别名）
+  fapb cmenu        打开 FAPB 控制菜单
   fapb wp menu      打开航点主菜单
   fapb help         显示全部子命令帮助
 
@@ -65,12 +67,12 @@ cstrike/addons/fapb/
   fb_password_key "_fbpw"
   fb_password     "thebot"
 聊天框输入口令（默认 _fbpw thebot）可获得菜单权限；也可以直接用
-rcon 执行 fapb cmenu。修改口令后记得同步修改 fb_password。
+rcon 执行 fapb menu。修改口令后记得同步修改 fb_password。
 
   【原生队伍管理菜单（无需 AMXX）】
-  bind "v" "fapb cmenu"
+  bind "v" "fapb menu"
 
-  按 V 打开主菜单，再按 1 进入【队伍管理】：
+  按 V 打开 FAPB 主菜单，再按 1 进入【队伍管理】：
     1. 快速添加 Bot（随机队伍）
     2. 添加 Bot（选择 T/CT） -> 1 恐怖分子 / 2 反恐精英 / 5 自动
     3. 随机踢出 1 个 Bot
@@ -78,7 +80,7 @@ rcon 执行 fapb cmenu。修改口令后记得同步修改 fb_password。
     5. 踢出指定 Bot（列表）
     0. 退出
 
-  fapb.cfg 中已经写入 bind "v" "fapb cmenu"。
+  fapb.cfg 中已经写入 bind "v" "fapb menu"。
   该菜单由 fapb.dll 自己弹出，完全不需要 AMXX。
 
 五、常用命令
@@ -159,7 +161,7 @@ Q: 进游戏没有 Bot？
 A: 执行 `fapb fill`，或把 fapb.cfg 的 fb_quota 改为 10 后重开地图。
 
 Q: 菜单没反应？
-A: 菜单默认需要口令/RCON。用 rcon 执行 `fapb cmenu`，
+A: 菜单默认需要口令/RCON。用 rcon 执行 `fapb menu`，
    或在聊天框输入 `_fbpw thebot` 后再试。
 
 Q: 想恢复 YAPB？
@@ -172,7 +174,7 @@ A: 会。默认值就是 YAPB 2.55b 的原始瞄准参数；除非明确知道�
 
 九、版本与来源
 ----------------------------------------------------------------------
-FAPB 1.4
+FAPB 1.5
 核心版本：YAPB 2.55b（YaPB Dev Team，基于 PODBot 代码）
 制作方式：从 yapb.zip 的 yapb.dll 解包，重命名插件/命令/Cvar/路径，
           重建 PE 与重定位表；未改动 AI、瞄准、行为代码。

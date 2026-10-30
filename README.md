@@ -15,11 +15,11 @@
 - **原汁原味的行为**：战术、经验、武器选择、航点系统、聊天逻辑未改动。
 - **独立命令**：`fapb`（兼容短命令 `fb`）。
 - **独立 Cvar**：全部为 `fb_*`，不会与 YAPB 的 `yb_*` 冲突。
-- **独立菜单**：`fapb cmenu`、`fapb wp menu`，菜单文字与标题均为 FAPB。
+- **独立菜单**：`fapb menu`、`fapb cmenu`、`fapb wp menu`，菜单文字与标题均为 FAPB。
 - **独立配置/航点**：`addons/fapb/config/`、`addons/fapb/wptdefault/`。
-- **原生队伍管理数字菜单**：`fapb cmenu` → `1`，由 fapb.dll 直接弹出，
+- **原生队伍管理数字菜单**：`fapb menu` → `1`，由 fapb.dll 直接弹出，
   经典 1-0 数字界面；可选 T/CT 添加 Bot、随机踢出、全部踢出、指定 Bot 列表。
-  支持 `bind v "fapb cmenu"`，完全不需要 AMXX。
+  支持 `bind v "fapb menu"`，完全不需要 AMXX。
 - **可与 YAPB / SYPB 共存安装**：不覆盖对方文件，命令/Cvar 命名空间隔离。
 
 > 运行层面同一时间只能启用一套 Bot 核心（FAPB、YAPB、SYPB 任选其一）。
@@ -31,7 +31,7 @@
 
 ### 方式 A：完整包（推荐）
 
-从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.4.zip**，解压后把 `fapb` 文件夹放到：
+从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.5.zip**，解压后把 `fapb` 文件夹放到：
 
 ```text
 <游戏根目录>\cstrike\addons\fapb
@@ -73,8 +73,9 @@ fapb version
 ## 命令与菜单
 
 ```text
-fapb cmenu          打开 FAPB 控制菜单（推荐）
+fapb menu           打开 FAPB 主菜单（数字菜单，推荐）
 fapb_menu           同上（fapb.cfg 中的别名）
+fapb cmenu          打开 FAPB 控制菜单
 fapb wp menu        航点主菜单
 fapb help           显示全部命令
 ```
@@ -104,11 +105,11 @@ fb_password_key "_fbpw"
 fb_password     "thebot"
 ```
 
-聊天框输入 `_fbpw thebot` 获取菜单权限，或直接用 rcon 执行 `fapb cmenu`。
+聊天框输入 `_fbpw thebot` 获取菜单权限，或直接用 rcon 执行 `fapb menu`。
 
 ### 原生队伍管理菜单（无需 AMXX）
 
-`fapb cmenu` 由 **fapb.dll 本身**弹出经典 1-0 数字菜单，不需要 AMXX。
+`fapb menu` 由 **fapb.dll 本身**弹出经典 1-0 数字主菜单，不需要 AMXX。
 主菜单第 1 项已经改为“队伍管理”：
 
 ```text
@@ -135,11 +136,11 @@ FAPB 队伍管理
 绑定按键（客户端控制台执行一次）：
 
 ```text
-bind v "fapb cmenu"
+bind v "fapb menu"
 ```
 
 然后按 `V` → `1` 进入队伍管理。`fapb.cfg` 中也已经写入同样的
-`bind "v" "fapb cmenu"`。
+`bind "v" "fapb menu"`。
 
 菜单本身仍受 FAPB 口令保护：
 
@@ -148,7 +149,7 @@ fb_password_key "_fbpw"
 fb_password     "thebot"
 ```
 
-聊天框输入 `_fbpw thebot`，或用 rcon 执行 `fapb cmenu`。
+聊天框输入 `_fbpw thebot`，或用 rcon 执行 `fapb menu`。
 
 > 这是 fapb.dll 自带的原生菜单（只改了中文标签/快捷键），不是新写的
 > T/CT 仪表盘。新增独立 T/CT 子菜单需要重新编译 YAPB 源码。
@@ -163,7 +164,7 @@ fb_password     "thebot"
 |---|---|---|
 | 主命令 | `fapb` / `fb` | `yapb` / `yb` |
 | Cvar | `fb_*` | `yb_*` |
-| 菜单 | `fapb cmenu` | `yapb cmenu` |
+| 菜单 | `fapb menu` / `fapb cmenu` | `yapb menu` / `yapb cmenu` |
 | 配置 | `addons/fapb/config/` | `addons/yapb/config/` |
 | 航点 | `addons/fapb/wptdefault/` | `addons/yapb/wptdefault/` |
 
@@ -203,7 +204,7 @@ fapb version
 [FAPB] Connecting FAPB... (Skill 95~100)
 ```
 
-`fapb cmenu` 与 `fapb help` 均已在 HLDS 控制台验证。
+`fapb menu` 与 `fapb help` 均已在 HLDS 控制台验证。
 
 ---
 
@@ -225,7 +226,7 @@ tools/                 二进制级构建工具与原始 YAPB 样本
 docs/COMMANDS.md       命令 / Cvar 参考
 ```
 
-完整航点包在 Release 的 `FAPB_1.4.zip` 中。
+完整航点包在 Release 的 `FAPB_1.5.zip` 中。
 
 ---
 
@@ -242,7 +243,7 @@ docs/COMMANDS.md       命令 / Cvar 参考
 
 AI 代码、瞄准参数、行为逻辑均未修改。构建脚本见 [tools/README.md](tools/README.md)。
 
-原生队伍菜单使用 fapb.dll 内置的 `fapb cmenu`，只改了中文标签和
+原生队伍菜单使用 fapb.dll 内置的 `fapb menu`，只改了中文标签和
 `fapb.cfg` 中的 V 键绑定，不需要 AMXX。
 
 复现构建：

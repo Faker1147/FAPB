@@ -37,7 +37,8 @@ fb   <subcommand> [args]
 
 | 命令 | 别名 | 说明 |
 |---|---|---|
-| `fapb cmenu` | `cmdmenu` / `menu` / `botmenu` | 打开 FAPB 控制菜单 |
+| `fapb menu` | `botmenu` | 打开 FAPB 主菜单（数字菜单） |
+| `fapb cmenu` | `cmdmenu` | 打开 FAPB 命令菜单 |
 | `fapb help` | `?` | 显示命令帮助 |
 | `fapb version` | `ver` | 版本信息 |
 | `fapb about` | `about_bot` | 关于信息 |
@@ -50,7 +51,7 @@ fb_password_key "_fbpw"
 fb_password     "thebot"
 ```
 
-聊天框输入 `_fbpw thebot`，或使用 rcon 执行 `fapb cmenu`。
+聊天框输入 `_fbpw thebot`，或使用 rcon 执行 `fapb menu`。
 
 `fapb.cfg` 中还提供了 `fapb_menu` 别名，可直接绑定：
 
@@ -60,7 +61,7 @@ bind "=" "fapb_menu"
 
 ### 2.1 原生队伍管理菜单（无需 AMXX）
 
-`fapb cmenu` 由 fapb.dll 直接弹出经典 1-0 数字菜单。主菜单第 1 项
+`fapb menu` 由 fapb.dll 直接弹出经典 1-0 数字主菜单。主菜单第 1 项
 “队伍管理”进入以下菜单：
 
 ```text
@@ -75,11 +76,11 @@ bind "=" "fapb_menu"
 绑定按键（客户端控制台执行一次）：
 
 ```text
-bind v "fapb cmenu"
+bind v "fapb menu"
 ```
 
 按 `V` 打开主菜单，再按 `1` 进入队伍管理。`fapb.cfg` 已包含
-`bind "v" "fapb cmenu"`。菜单仍使用 FAPB 自己的口令：
+`bind "v" "fapb menu"`。菜单仍使用 FAPB 自己的口令：
 
 ```text
 fb_password_key "_fbpw"

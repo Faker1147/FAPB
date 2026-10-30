@@ -1,7 +1,7 @@
-FAPB 1.4 - build information
+FAPB 1.5 - build information
 ========================================
 Core engine : YAPB 2.55b (YaPB Dev Team / PODBot code)
-Package     : FAPB 1.4 (native numeric team menu, no AMXX required)
+Package     : FAPB 1.5 (native numeric main menu, no AMXX required)
 DLL         : fapb.dll (643072 bytes)
 DLL SHA256  : 606E7A6AB8793553847BCBF2D5665D29EDEA0B3529EACA537D7E76DE7B6E3553
 Source zip  : yapb.zip
@@ -9,33 +9,35 @@ ZIP SHA256  : E558DBE5451F09358EAE0122E5901F25DF2D0084439BA25BD0D49D17AFB92F83
 
 Namespaces
   command   : fapb  (legacy short alias: fb)
-  menu      : fapb cmenu  (alias fapb_menu)
+  main menu : fapb menu  (alias fapb_menu)
+  cmd menu  : fapb cmenu
   cvars     : fb_*
   config    : addons/fapb/config/
   waypoints : addons/fapb/wptdefault/
 
-Native team menu (fapb.dll itself)
-  bind      : bind "v" "fapb cmenu"
-  path      : V -> 1 (队伍管理)
+Native main menu (fapb.dll itself)
+  bind      : bind "v" "fapb menu"
+  path      : V -> FAPB 主菜单 -> 1 (队伍管理)
               V -> 1 -> 2 -> 1/2 (添加 Bot, 选 T/CT)
               V -> 1 -> 5 (踢出指定 Bot 列表)
   language  : config/language/chs_lang.cfg (menu labels)
-  config    : config/fapb.cfg (bind "v")
+  config    : config/fapb.cfg (alias fapb_menu -> fapb menu, bind v)
+  client    : userconfig.cfg (bind v + setinfo _fbpw)
   amxx      : NOT required; no fapb_teams.amxx is installed
 
 Runtime verification
   HLDS 1.1.2.5 (build 3262) + Metamod 1.19 + AMXX 1.8.1 (other plugins)
   meta list          -> [3] FAPB RUN ... fapb.dll v2.55b
   fapb version       -> Name: FAPB / Version: 2.55b
-  fapb cmenu         -> native menu command
+  fapb menu          -> native main menu command
   bots auto-created  -> [FAPB] Connecting FAPB... (Skill 95..100)
   AMXX team plugin   -> disabled/removed
 
 Notes
   - The original YAPB aim/shooting/behaviour code is unchanged.
   - Only plugin/cmd/cvar/path strings were renamed (binary-level fork).
-  - The native team menu reuses fapb.dll's built-in Control Menu and
-    only changes the Chinese labels + V key bind.
+  - The native main menu is fapb.dll's built-in menu, relabeled and bound
+    to V. It is not a newly coded T/CT dashboard.
   - A brand-new T/CT dashboard inside fapb.dll would require rebuilding
     YAPB from source; this package does not do that.
   - Do not load FAPB and YAPB/SYPB as active bot cores at the same time.

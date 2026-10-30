@@ -1,0 +1,28 @@
+﻿FAPB 1.0 - build information
+========================================
+Core engine : YAPB 2.55b (YaPB Dev Team / PODBot code)
+Package     : FAPB 1.0 (independent bot name/commands/cvars)
+DLL         : fapb.dll (643072 bytes)
+DLL SHA256  : 606E7A6AB8793553847BCBF2D5665D29EDEA0B3529EACA537D7E76DE7B6E3553
+Source zip  : yapb.zip
+ZIP SHA256  : E558DBE5451F09358EAE0122E5901F25DF2D0084439BA25BD0D49D17AFB92F83
+
+Namespaces
+  command   : fapb  (legacy short alias: fb)
+  menu      : fapb cmenu  (alias fapb_menu)
+  cvars     : fb_*
+  config    : addons/fapb/config/
+  waypoints : addons/fapb/wptdefault/
+
+Runtime verification
+  HLDS 1.1.2.5 (build 3262) + Metamod 1.19 + AMXX 1.8.1
+  meta list          -> [3] FAPB RUN ... fapb.dll v2.55b
+  fapb version       -> Name: FAPB / Version: 2.55b
+  fapb cmenu         -> command accepted (menu access check)
+  fapb help          -> full fapb command list
+  bots auto-created  -> [FAPB] Connecting FAPB... (Skill 95..100)
+
+Notes
+  - The original YAPB aim/shooting/behaviour code is unchanged.
+  - Only plugin/cmd/cvar/path strings were renamed (binary-level fork).
+  - Do not load FAPB and YAPB/SYPB as active bot cores at the same time.

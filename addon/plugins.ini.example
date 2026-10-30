@@ -1,0 +1,12 @@
+;; -----------------------------------------------------------------------
+;; FAPB - Metamod plugins.ini example
+;; Copy the line below into cstrike/addons/metamod/plugins.ini
+;; IMPORTANT: use only ONE bot core at a time (FAPB, YAPB or SYPB).
+;; -----------------------------------------------------------------------
+
+; win32 addons/yapb/dlls/yapb.dll
+win32 addons/fapb/dlls/fapb.dll
+
+;; Other plugins (examples, keep your existing lines):
+; win32 addons/amxmodx/dlls/amxmodx_mm.dll
+; win32 addons/booster/booster_mm.dll

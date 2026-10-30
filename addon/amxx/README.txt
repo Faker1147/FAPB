@@ -4,6 +4,8 @@ FAPB Team Menu (AMX Mod X)
 这是 FAPB 的独立队伍管理菜单，插件本身不改 FAPB/YAPB 的 AI，
 只通过服务器命令调用 fapb add_t / fapb kick_t 等功能。
 
+菜单使用经典数字界面（1-7 选择，0 退出），与 YAPB 菜单的操作方式一致。
+
 安装（手动）
 ------------
 1. 把 fapb_teams.amxx 复制到：

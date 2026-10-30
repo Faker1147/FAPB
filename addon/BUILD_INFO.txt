@@ -1,7 +1,7 @@
-FAPB 1.2 - build information
+FAPB 1.3 - build information
 ========================================
 Core engine : YAPB 2.55b (YaPB Dev Team / PODBot code)
-Package     : FAPB 1.2 (independent bot + team menu + hotkey binding)
+Package     : FAPB 1.3 (independent bot + classic numeric team menu)
 DLL         : fapb.dll (643072 bytes)
 DLL SHA256  : 606E7A6AB8793553847BCBF2D5665D29EDEA0B3529EACA537D7E76DE7B6E3553
 Source zip  : yapb.zip
@@ -16,8 +16,9 @@ Namespaces
 
 Team menu (optional AMXX plugin)
   file      : addons/fapb/amxx/fapb_teams.amxx
-  size      : 13846 bytes
-  sha256    : 780941DF972CA55970EA5684492659C42862ADC134182A04F24FDDA6DC90F1FF
+  size      : 11512 bytes
+  sha256    : 79A1C1BDFDF390A203E61C169032009E5542E48BBBB1F93F7FD60EFE7FDD830C
+  style     : classic numeric menu (1-7 select, 0 exit), like YAPB
   commands  : fapb_teams | fapb_bind [key] | fapb_unbind [key]
               say /fapbteams | amx_fapb_teams
   cvar      : fapb_teams_access 1 (ADMIN_MENU only) / 0 (everyone)
@@ -32,7 +33,7 @@ Runtime verification
   fapb cmenu         -> command accepted (menu access check)
   fapb help          -> full fapb command list
   bots auto-created  -> [FAPB] Connecting FAPB... (Skill 95..100)
-  fapb_teams         -> plugin loaded; T/CT counts and bot names printed
+  fapb_teams         -> plugin loaded; server overview printed
   amx_fapb_teams     -> delayed test: T=3 CT=3 after bots joined
   fapb_bind          -> player command registered (default key V)
 
@@ -40,5 +41,7 @@ Notes
   - The original YAPB aim/shooting/behaviour code is unchanged.
   - Only plugin/cmd/cvar/path strings were renamed (binary-level fork).
   - The team menu is an AMXX companion plugin; it calls fapb commands.
+  - The menu uses show_menu (classic 1-0 numeric UI), not the new AMXX
+    paged menu API.
   - Hotkey binding is per-player (`bind <key> fapb_teams`).
   - Do not load FAPB and YAPB/SYPB as active bot cores at the same time.

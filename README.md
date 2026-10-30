@@ -17,8 +17,9 @@
 - **独立 Cvar**：全部为 `fb_*`，不会与 YAPB 的 `yb_*` 冲突。
 - **独立菜单**：`fapb cmenu`、`fapb wp menu`，菜单文字与标题均为 FAPB。
 - **独立配置/航点**：`addons/fapb/config/`、`addons/fapb/wptdefault/`。
-- **独立队伍管理菜单**：`fapb_teams`（AMXX 伴侣插件），T/CT 分队列管理、
-  添加/踢出/杀死 Bot、查看列表、填充、交换队伍，支持菜单内绑定快捷键。
+- **独立队伍管理菜单**：`fapb_teams`（AMXX 伴侣插件），经典 1-7/0 数字菜单
+  （与 YAPB 操作方式一致），T/CT 分队列管理、添加/踢出/杀死 Bot、查看列表、
+  填充、交换队伍，支持菜单内绑定快捷键。
 - **可与 YAPB / SYPB 共存安装**：不覆盖对方文件，命令/Cvar 命名空间隔离。
 
 > 运行层面同一时间只能启用一套 Bot 核心（FAPB、YAPB、SYPB 任选其一）。
@@ -30,7 +31,7 @@
 
 ### 方式 A：完整包（推荐）
 
-从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.2.zip**，解压后把 `fapb` 文件夹放到：
+从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.3.zip**，解压后把 `fapb` 文件夹放到：
 
 ```text
 <游戏根目录>\cstrike\addons\fapb
@@ -112,7 +113,8 @@ fb_password     "thebot"
 
 ### 队伍管理菜单（AMXX）
 
-安装 `fapb_teams.amxx` 后可使用独立的队伍管理菜单：
+安装 `fapb_teams.amxx` 后可使用独立的队伍管理菜单。菜单使用经典
+**1-7 选择、0 退出** 的数字界面，和 YAPB 内置菜单的操作方式一致：
 
 ```text
 fapb_teams         玩家控制台打开
@@ -222,7 +224,7 @@ tools/                 二进制级构建工具与原始 YAPB 样本
 docs/COMMANDS.md       命令 / Cvar 参考
 ```
 
-完整航点包在 Release 的 `FAPB_1.2.zip` 中。
+完整航点包在 Release 的 `FAPB_1.3.zip` 中。
 
 ---
 

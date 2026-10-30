@@ -77,7 +77,7 @@ bind "=" "fapb_menu"
 fapb_teams_access 1   ; 1 = ADMIN_MENU 管理员（默认），0 = 所有玩家
 ```
 
-菜单项：
+菜单项（经典数字界面：1-7 选择，0 退出，与 YAPB 菜单一致）：
 
 - T 队管理 / CT 队管理
   - 添加 1 个 Bot

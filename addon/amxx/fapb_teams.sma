@@ -1,30 +1,39 @@
 /*
- * FAPB Team Menu
- * ---------------
- * An independent AMX Mod X menu for FAPB (not part of the YAPB core).
- * It calls FAPB console commands, so the bot AI remains untouched.
+ * FAPB Team Menu (classic numeric menu)
+ * -------------------------------------
+ * A standalone AMX Mod X companion menu for FAPB.
+ * Uses the old-style numbered menu (1-0), like YAPB's in-game menus.
  *
  * Commands:
  *   fapb_teams            client console
  *   fapb_team             alias
+ *   fapb_bind [key]       bind a key (default V)
+ *   fapb_unbind [key]     unbind a key (default V)
  *   say /fapbteams        chat
- *   amx_fapb_teams        server console / rcon
+ *   amx_fapb_teams        server console / rcon overview
  *
  * Cvar:
- *   fapb_teams_access 1  1 = ADMIN_MENU only (default), 0 = everyone
+ *   fapb_teams_access 1   1 = ADMIN_MENU only (default), 0 = everyone
  */
 
 #include <amxmodx>
 #include <amxmisc>
 
 #define PLUGIN  "FAPB Team Menu"
-#define VERSION "1.2"
+#define VERSION "1.3"
 #define AUTHOR  "FAPB"
 
 #define TEAM_T  1
 #define TEAM_CT 2
 
+// 1,2,3,4,5,6,7 and 0
+#define MENU_KEYS 639
+
 new g_access;
+new g_menu_main;
+new g_menu_team_t;
+new g_menu_team_ct;
+new g_menu_hotkey;
 new const g_team_names[][] = { "", "T", "CT" };
 
 public plugin_init()
@@ -42,6 +51,18 @@ public plugin_init()
     register_srvcmd("amx_fapb_teams", "cmd_srv_teams");
     register_clcmd("say /fapbteams", "cmd_say_teams");
     register_clcmd("say_team /fapbteams", "cmd_say_teams");
+
+    g_menu_main = register_menuid("FAPB Team Menu");
+    register_menucmd(g_menu_main, 1023, "menu_main");
+
+    g_menu_team_t = register_menuid("FAPB Team Menu: T");
+    register_menucmd(g_menu_team_t, 1023, "menu_team_t");
+
+    g_menu_team_ct = register_menuid("FAPB Team Menu: CT");
+    register_menucmd(g_menu_team_ct, 1023, "menu_team_ct");
+
+    g_menu_hotkey = register_menuid("FAPB Team Menu: Hotkey");
+    register_menucmd(g_menu_hotkey, 1023, "menu_hotkey");
 }
 
 public plugin_cfg()
@@ -151,230 +172,189 @@ show_main(id)
 {
     new tcount = count_bots(TEAM_T);
     new ctcount = count_bots(TEAM_CT);
-    new title[128];
+    new text[512];
 
-    formatex(title, charsmax(title), "\yFAPB 队伍管理\w   T:%d  CT:%d", tcount, ctcount);
+    formatex(text, charsmax(text),
+        "\yFAPB 队伍管理\w   T:%d  CT:%d^n^n\
+        \w1. T 队管理^n\
+        \w2. CT 队管理^n\
+        \w3. 双方总览 / 刷新^n\
+        \w4. 快速填充双方 (fapb fill)^n\
+        \w5. 踢出全部 Bot (fapb kickall)^n\
+        \w6. 交换 T/CT (fapb swap)^n\
+        \w7. 快捷键设置^n^n\
+        \w0. 退出",
+        tcount, ctcount);
 
-    new menu = menu_create(title, "menu_main");
-    menu_additem(menu, "\wT 队管理 (T Team)", "t");
-    menu_additem(menu, "\wCT 队管理 (CT Team)", "ct");
-    menu_additem(menu, "\w双方总览 / 刷新", "overview");
-    menu_additem(menu, "\w快速填充双方 (fapb fill)", "fill");
-    menu_additem(menu, "\w踢出全部 Bot (fapb kickall)", "kickall");
-    menu_additem(menu, "\w交换 T/CT (fapb swap)", "swap");
-    menu_additem(menu, "\w快捷键设置 (Hotkey)", "hotkey");
-
-    menu_setprop(menu, MPROP_EXIT, MEXIT_ALL);
-    menu_setprop(menu, MPROP_EXITNAME, "退出");
-    menu_setprop(menu, MPROP_BACKNAME, "返回");
-    menu_setprop(menu, MPROP_NEXTNAME, "下一页");
-    menu_display(id, menu, 0);
+    show_menu(id, MENU_KEYS, text, -1, "FAPB Team Menu");
 }
 
-public menu_main(id, menu, item)
+public menu_main(id, key)
 {
-    if (item == MENU_EXIT)
+    switch (key)
     {
-        menu_destroy(menu);
-        return PLUGIN_HANDLED;
+        case 0: show_team(id, TEAM_T);
+        case 1: show_team(id, TEAM_CT);
+        case 2:
+        {
+            print_overview(id);
+            show_main(id);
+        }
+        case 3:
+        {
+            server_cmd("fapb fill");
+            client_print(id, print_chat, "[FAPB] 已执行 fapb fill。");
+            show_main(id);
+        }
+        case 4:
+        {
+            server_cmd("fapb kickall");
+            client_print(id, print_chat, "[FAPB] 已踢出全部 Bot。");
+            show_main(id);
+        }
+        case 5:
+        {
+            server_cmd("fapb swap");
+            client_print(id, print_chat, "[FAPB] 已执行队伍交换。");
+            show_main(id);
+        }
+        case 6: show_hotkey(id);
+        case 9: return PLUGIN_HANDLED;
+        default: show_main(id);
     }
-
-    new data[16], name[64], access, callback;
-    menu_item_getinfo(menu, item, access, data, charsmax(data), name, charsmax(name), callback);
-    menu_destroy(menu);
-
-    if (equal(data, "t"))
-    {
-        show_team(id, TEAM_T);
-    }
-    else if (equal(data, "ct"))
-    {
-        show_team(id, TEAM_CT);
-    }
-    else if (equal(data, "overview"))
-    {
-        print_overview(id);
-        show_main(id);
-    }
-    else if (equal(data, "fill"))
-    {
-        server_cmd("fapb fill");
-        client_print(id, print_chat, "[FAPB] 已执行 fapb fill。");
-        show_main(id);
-    }
-    else if (equal(data, "kickall"))
-    {
-        server_cmd("fapb kickall");
-        client_print(id, print_chat, "[FAPB] 已踢出全部 Bot。");
-        show_main(id);
-    }
-    else if (equal(data, "swap"))
-    {
-        server_cmd("fapb swap");
-        client_print(id, print_chat, "[FAPB] 已执行队伍交换。");
-        show_main(id);
-    }
-    else if (equal(data, "hotkey"))
-    {
-        show_hotkey(id);
-    }
-
-    return PLUGIN_HANDLED;
-}
-
-show_hotkey(id)
-{
-    new menu = menu_create("\yFAPB 快捷键设置\w", "menu_hotkey");
-
-    menu_additem(menu, "\w绑定 V 键 (Bind V)", "bind_v");
-    menu_additem(menu, "\w绑定 N 键 (Bind N)", "bind_n");
-    menu_additem(menu, "\w绑定 = 键 (Bind =)", "bind_eq");
-    menu_additem(menu, "\w解绑 V 键 (Unbind V)", "unbind_v");
-    menu_additem(menu, "\w解绑 N 键 (Unbind N)", "unbind_n");
-    menu_additem(menu, "\w解绑 = 键 (Unbind =)", "unbind_eq");
-    menu_additem(menu, "\w返回主菜单 (Back)", "back");
-
-    menu_setprop(menu, MPROP_EXIT, MEXIT_ALL);
-    menu_setprop(menu, MPROP_EXITNAME, "退出");
-    menu_setprop(menu, MPROP_BACKNAME, "返回");
-    menu_setprop(menu, MPROP_NEXTNAME, "下一页");
-    menu_display(id, menu, 0);
-}
-
-public menu_hotkey(id, menu, item)
-{
-    if (item == MENU_EXIT)
-    {
-        menu_destroy(menu);
-        return PLUGIN_HANDLED;
-    }
-
-    new data[16], name[64], access, callback;
-    menu_item_getinfo(menu, item, access, data, charsmax(data), name, charsmax(name), callback);
-    menu_destroy(menu);
-
-    if (equal(data, "bind_v"))
-    {
-        client_cmd(id, "bind v fapb_teams");
-        client_print(id, print_chat, "[FAPB] 已绑定 V 键 -> 队伍管理菜单。");
-    }
-    else if (equal(data, "bind_n"))
-    {
-        client_cmd(id, "bind n fapb_teams");
-        client_print(id, print_chat, "[FAPB] 已绑定 N 键 -> 队伍管理菜单。");
-    }
-    else if (equal(data, "bind_eq"))
-    {
-        client_cmd(id, "bind = fapb_teams");
-        client_print(id, print_chat, "[FAPB] 已绑定 = 键 -> 队伍管理菜单。");
-    }
-    else if (equal(data, "unbind_v"))
-    {
-        client_cmd(id, "unbind v");
-        client_print(id, print_chat, "[FAPB] 已解绑 V 键。");
-    }
-    else if (equal(data, "unbind_n"))
-    {
-        client_cmd(id, "unbind n");
-        client_print(id, print_chat, "[FAPB] 已解绑 N 键。");
-    }
-    else if (equal(data, "unbind_eq"))
-    {
-        client_cmd(id, "unbind =");
-        client_print(id, print_chat, "[FAPB] 已解绑 = 键。");
-    }
-    else if (equal(data, "back"))
-    {
-        show_main(id);
-        return PLUGIN_HANDLED;
-    }
-
-    show_hotkey(id);
     return PLUGIN_HANDLED;
 }
 
 show_team(id, team)
 {
     new count = count_bots(team);
-    new title[128];
-    new info[16];
+    new text[512];
 
-    formatex(title, charsmax(title), "\y%s 队管理\w   当前 %d 个 Bot", g_team_names[team], count);
-    new menu = menu_create(title, "menu_team");
+    formatex(text, charsmax(text),
+        "\y%s 队管理\w   当前 %d 个 Bot^n^n\
+        \w1. 添加 1 个 Bot^n\
+        \w2. 添加 5 个 Bot^n\
+        \w3. 踢出 1 个 Bot^n\
+        \w4. 踢出全部 Bot^n\
+        \w5. 杀死全部 Bot^n\
+        \w6. 查看 Bot 列表^n\
+        \w7. 返回主菜单^n^n\
+        \w0. 退出",
+        g_team_names[team], count);
 
-    formatex(info, charsmax(info), "%s_add1", team == TEAM_T ? "t" : "ct");
-    menu_additem(menu, "\w添加 1 个 Bot (Add 1)", info);
-
-    formatex(info, charsmax(info), "%s_add5", team == TEAM_T ? "t" : "ct");
-    menu_additem(menu, "\w添加 5 个 Bot (Add 5)", info);
-
-    formatex(info, charsmax(info), "%s_kick1", team == TEAM_T ? "t" : "ct");
-    menu_additem(menu, "\w踢出 1 个 Bot (Kick 1)", info);
-
-    formatex(info, charsmax(info), "%s_kickall", team == TEAM_T ? "t" : "ct");
-    menu_additem(menu, "\w踢出全部 Bot (Kick All)", info);
-
-    formatex(info, charsmax(info), "%s_kill", team == TEAM_T ? "t" : "ct");
-    menu_additem(menu, "\w杀死全部 Bot (Kill All)", info);
-
-    formatex(info, charsmax(info), "%s_list", team == TEAM_T ? "t" : "ct");
-    menu_additem(menu, "\w查看 Bot 列表 (List)", info);
-
-    formatex(info, charsmax(info), "%s_back", team == TEAM_T ? "t" : "ct");
-    menu_additem(menu, "\w返回主菜单 (Back)", info);
-
-    menu_setprop(menu, MPROP_EXIT, MEXIT_ALL);
-    menu_setprop(menu, MPROP_EXITNAME, "退出");
-    menu_setprop(menu, MPROP_BACKNAME, "返回");
-    menu_setprop(menu, MPROP_NEXTNAME, "下一页");
-    menu_display(id, menu, 0);
+    if (team == TEAM_T)
+        show_menu(id, MENU_KEYS, text, -1, "FAPB Team Menu: T");
+    else
+        show_menu(id, MENU_KEYS, text, -1, "FAPB Team Menu: CT");
 }
 
-public menu_team(id, menu, item)
+public menu_team_t(id, key)
 {
-    if (item == MENU_EXIT)
-    {
-        menu_destroy(menu);
-        return PLUGIN_HANDLED;
-    }
+    handle_team(id, key, TEAM_T);
+}
 
-    new data[16], name[64], access, callback;
-    menu_item_getinfo(menu, item, access, data, charsmax(data), name, charsmax(name), callback);
-    menu_destroy(menu);
+public menu_team_ct(id, key)
+{
+    handle_team(id, key, TEAM_CT);
+}
 
-    new team = (data[0] == 't') ? TEAM_T : TEAM_CT;
+handle_team(id, key, team)
+{
+    switch (key)
+    {
+        case 0:
+        {
+            add_bots(team, 1);
+            show_team(id, team);
+        }
+        case 1:
+        {
+            add_bots(team, 5);
+            show_team(id, team);
+        }
+        case 2:
+        {
+            kick_bots(team, 1);
+            show_team(id, team);
+        }
+        case 3:
+        {
+            kick_bots(team, 0);
+            show_team(id, team);
+        }
+        case 4:
+        {
+            kill_bots(team);
+            show_team(id, team);
+        }
+        case 5:
+        {
+            print_team_bots(id, team);
+            show_team(id, team);
+        }
+        case 6: show_main(id);
+        case 9: return PLUGIN_HANDLED;
+        default: show_team(id, team);
+    }
+    return PLUGIN_HANDLED;
+}
 
-    if (contain(data, "add1") != -1)
-    {
-        add_bots(team, 1);
-    }
-    else if (contain(data, "add5") != -1)
-    {
-        add_bots(team, 5);
-    }
-    else if (contain(data, "kick1") != -1)
-    {
-        kick_bots(team, 1);
-    }
-    else if (contain(data, "kickall") != -1)
-    {
-        kick_bots(team, 0);
-    }
-    else if (contain(data, "kill") != -1)
-    {
-        kill_bots(team);
-    }
-    else if (contain(data, "list") != -1)
-    {
-        print_team_bots(id, team);
-    }
-    else if (contain(data, "back") != -1)
-    {
-        show_main(id);
-        return PLUGIN_HANDLED;
-    }
+show_hotkey(id)
+{
+    new text[512];
 
-    show_team(id, team);
+    formatex(text, charsmax(text),
+        "\yFAPB 快捷键设置\w^n^n\
+        \w1. 绑定 V 键^n\
+        \w2. 绑定 N 键^n\
+        \w3. 绑定 = 键^n\
+        \w4. 解绑 V 键^n\
+        \w5. 解绑 N 键^n\
+        \w6. 解绑 = 键^n\
+        \w7. 返回主菜单^n^n\
+        \w0. 退出");
+
+    show_menu(id, MENU_KEYS, text, -1, "FAPB Team Menu: Hotkey");
+}
+
+public menu_hotkey(id, key)
+{
+    switch (key)
+    {
+        case 0:
+        {
+            client_cmd(id, "bind v fapb_teams");
+            client_print(id, print_chat, "[FAPB] 已绑定 V 键 -> 队伍管理菜单。");
+        }
+        case 1:
+        {
+            client_cmd(id, "bind n fapb_teams");
+            client_print(id, print_chat, "[FAPB] 已绑定 N 键 -> 队伍管理菜单。");
+        }
+        case 2:
+        {
+            client_cmd(id, "bind = fapb_teams");
+            client_print(id, print_chat, "[FAPB] 已绑定 = 键 -> 队伍管理菜单。");
+        }
+        case 3:
+        {
+            client_cmd(id, "unbind v");
+            client_print(id, print_chat, "[FAPB] 已解绑 V 键。");
+        }
+        case 4:
+        {
+            client_cmd(id, "unbind n");
+            client_print(id, print_chat, "[FAPB] 已解绑 N 键。");
+        }
+        case 5:
+        {
+            client_cmd(id, "unbind =");
+            client_print(id, print_chat, "[FAPB] 已解绑 = 键。");
+        }
+        case 6: show_main(id);
+        case 9: return PLUGIN_HANDLED;
+        default: show_hotkey(id);
+    }
     return PLUGIN_HANDLED;
 }
 

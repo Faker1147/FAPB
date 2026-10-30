@@ -29,7 +29,7 @@ cstrike/addons/fapb/
   config/general.cfg            性格、经济、技能参数
   config/chatter.cfg            Bot 聊天语句
   config/language/*.cfg         中/英/德文菜单与聊天语言
-  wptdefault/                   YAPB 格式航点（.pwf，455 个文件）
+  wptdefault/                   YAPB 格式航点（94 张地图，455 个文件）
   README_FAPB.txt               本说明
   plugins.ini.example           Metamod 加载示例
   install_fapb.ps1              一键安装脚本（可选）

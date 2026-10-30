@@ -57,7 +57,7 @@ fapb version
 
 ### 方式 B：从本仓库克隆
 
-本仓库的 `addon/` 不含 455 个 `.pwf` 航点（约 170 MB）。克隆后：
+本仓库的 `addon/` 不含完整航点数据（94 张地图的 `.pwf` 及配套文件，共 455 个，约 170 MB）。克隆后：
 
 1. 把 `addon/` 复制为 `cstrike/addons/fapb/`；
 2. 从 Release 包或已有 YAPB 安装中复制 `wptdefault/` 到 `cstrike/addons/fapb/wptdefault/`；

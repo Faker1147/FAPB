@@ -58,49 +58,36 @@ fb_password     "thebot"
 bind "=" "fapb_menu"
 ```
 
-### 2.1 队伍管理菜单（AMXX 伴侣插件）
+### 2.1 原生队伍管理菜单（无需 AMXX）
 
-需要 AMXX，并加载 `fapb_teams.amxx`（安装脚本会自动处理）。
-
-| 命令 | 说明 |
-|---|---|
-| `fapb_teams` | 玩家控制台打开队伍管理菜单 |
-| `fapb_team` | 同上（别名） |
-| `fapb_bind [键]` | 绑定快捷键到 `fapb_teams`，默认 `v`；例如 `fapb_bind v`、`fapb_bind =` |
-| `fapb_unbind [键]` | 解绑快捷键，默认 `v` |
-| `say /fapbteams` | 聊天打开菜单 |
-| `amx_fapb_teams` | 服务器控制台 / rcon，打印双方 Bot 列表 |
-
-权限 Cvar：
+`fapb cmenu` 由 fapb.dll 直接弹出经典 1-0 数字菜单。主菜单第 1 项
+“队伍管理”进入以下菜单：
 
 ```text
-fapb_teams_access 1   ; 1 = ADMIN_MENU 管理员（默认），0 = 所有玩家
+1. 快速添加 Bot（随机队伍）
+2. 添加 Bot（选择 T/CT）   → 1 恐怖分子 / 2 反恐精英 / 5 自动
+3. 随机踢出 1 个 Bot
+4. 踢出全部 Bot
+5. 踢出指定 Bot（列表）
+0. 退出
 ```
 
-菜单项（经典数字界面：1-7 选择，0 退出，与 YAPB 菜单一致）：
-
-- T 队管理 / CT 队管理
-  - 添加 1 个 Bot
-  - 添加 5 个 Bot
-  - 踢出 1 个 Bot
-  - 踢出全部 Bot
-  - 杀死全部 Bot
-  - 查看 Bot 列表
-  - 返回主菜单
-- 双方总览 / 刷新
-- 快速填充双方（`fapb fill`）
-- 踢出全部 Bot（`fapb kickall`）
-- 交换 T/CT（`fapb swap`）
-- 快捷键设置（绑定/解绑 V、N、= 键）
-
-快捷键绑定只影响执行命令的玩家本人，不会改服务器或其他玩家的
-`config.cfg`。也可以直接在客户端控制台执行：
+绑定按键（客户端控制台执行一次）：
 
 ```text
-bind v fapb_teams
+bind v "fapb cmenu"
 ```
 
-> 该插件只调用 `fapb` 服务器命令，不修改 FAPB 的 AI 或瞄准参数。
+按 `V` 打开主菜单，再按 `1` 进入队伍管理。`fapb.cfg` 已包含
+`bind "v" "fapb cmenu"`。菜单仍使用 FAPB 自己的口令：
+
+```text
+fb_password_key "_fbpw"
+fb_password     "thebot"
+```
+
+> 这是 fapb.dll 自带菜单的原生标签/快捷键配置，不是新写的
+> T/CT 仪表盘；新增独立 T/CT 子菜单需要重新编译 YAPB 源码。
 
 ## 3. 航点 / 路径
 

@@ -97,36 +97,14 @@ if (Test-Path -LiteralPath $liblist) {
     }
 }
 
-# Optional AMXX team menu.  If AMXX is installed, install the companion
-# plugin and add it to AMXX's plugins.ini.
-$amxDir = Join-Path $cstrike "addons\amxmodx"
-$amxPlugin = Join-Path $src "amxx\fapb_teams.amxx"
-$amxIni = Join-Path $amxDir "configs\plugins.ini"
-
-if ((Test-Path -LiteralPath $amxDir) -and (Test-Path -LiteralPath $amxPlugin) -and (Test-Path -LiteralPath $amxIni)) {
-    $amxPluginsDir = Join-Path $amxDir "plugins"
-    New-Item -ItemType Directory -Force -Path $amxPluginsDir | Out-Null
-    Copy-Item -LiteralPath $amxPlugin -Destination (Join-Path $amxPluginsDir "fapb_teams.amxx") -Force
-
-    Copy-Item -LiteralPath $amxIni -Destination "$amxIni.fapb.bak" -Force
-    $amxText = [IO.File]::ReadAllText($amxIni)
-    if ($amxText -notmatch '(?im)^\s*fapb_teams\.amxx') {
-        [IO.File]::AppendAllText($amxIni, "`r`nfapb_teams.amxx`r`n", [Text.Encoding]::ASCII)
-    }
-    Write-Host "AMXX team menu installed: fapb_teams.amxx"
-} elseif (Test-Path -LiteralPath $amxDir) {
-    Write-Warning "AMXX found, but fapb_teams.amxx is missing from the package."
-} else {
-    Write-Warning "AMXX not found. The optional team menu was skipped."
-    Write-Warning "The built-in FAPB menu (fapb cmenu) is still available."
-}
-
 Write-Host ""
 Write-Host "FAPB installed."
 Write-Host "Start the game/server, then check the console:"
 Write-Host "  meta list"
 Write-Host "  fapb version"
 Write-Host "  fapb cmenu"
-Write-Host "  fapb_teams"
+Write-Host ""
+Write-Host "Native team menu: bind v `"fapb cmenu`""
+Write-Host "Then press V -> 1 (team management)."
 Write-Host ""
 Write-Host "To switch back to YAPB: restore $backup or edit plugins.ini."

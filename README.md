@@ -17,9 +17,9 @@
 - **独立 Cvar**：全部为 `fb_*`，不会与 YAPB 的 `yb_*` 冲突。
 - **独立菜单**：`fapb cmenu`、`fapb wp menu`，菜单文字与标题均为 FAPB。
 - **独立配置/航点**：`addons/fapb/config/`、`addons/fapb/wptdefault/`。
-- **独立队伍管理菜单**：`fapb_teams`（AMXX 伴侣插件），经典 1-7/0 数字菜单
-  （与 YAPB 操作方式一致），T/CT 分队列管理、添加/踢出/杀死 Bot、查看列表、
-  填充、交换队伍，支持菜单内绑定快捷键。
+- **原生队伍管理数字菜单**：`fapb cmenu` → `1`，由 fapb.dll 直接弹出，
+  经典 1-0 数字界面；可选 T/CT 添加 Bot、随机踢出、全部踢出、指定 Bot 列表。
+  支持 `bind v "fapb cmenu"`，完全不需要 AMXX。
 - **可与 YAPB / SYPB 共存安装**：不覆盖对方文件，命令/Cvar 命名空间隔离。
 
 > 运行层面同一时间只能启用一套 Bot 核心（FAPB、YAPB、SYPB 任选其一）。
@@ -31,7 +31,7 @@
 
 ### 方式 A：完整包（推荐）
 
-从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.3.zip**，解压后把 `fapb` 文件夹放到：
+从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.4.zip**，解压后把 `fapb` 文件夹放到：
 
 ```text
 <游戏根目录>\cstrike\addons\fapb
@@ -67,11 +67,6 @@ fapb version
 3. 按上面的 `plugins.ini` 配置加载。
 
 也可以直接运行 `addon/install_fapb.ps1`（需要 PowerShell，脚本会备份 `plugins.ini`）。
-
-如果服务器安装了 AMXX，脚本还会自动安装 `fapb_teams.amxx` 到
-`cstrike/addons/amxmodx/plugins/` 并写入 AMXX 的 `configs/plugins.ini`。
-手动安装：把 `addon/amxx/fapb_teams.amxx` 复制到 AMXX 的 `plugins/`，
-再在 `configs/plugins.ini` 末尾加一行 `fapb_teams.amxx`，重开地图。
 
 ---
 
@@ -111,45 +106,52 @@ fb_password     "thebot"
 
 聊天框输入 `_fbpw thebot` 获取菜单权限，或直接用 rcon 执行 `fapb cmenu`。
 
-### 队伍管理菜单（AMXX）
+### 原生队伍管理菜单（无需 AMXX）
 
-安装 `fapb_teams.amxx` 后可使用独立的队伍管理菜单。菜单使用经典
-**1-7 选择、0 退出** 的数字界面，和 YAPB 内置菜单的操作方式一致：
-
-```text
-fapb_teams         玩家控制台打开
-fapb_bind [键]     绑定快捷键（默认 V），例如 fapb_bind v / fapb_bind =
-fapb_unbind [键]   解绑快捷键（默认 V）
-say /fapbteams     聊天打开
-amx_fapb_teams     服务器控制台 / rcon，打印双方 Bot 列表
-```
-
-菜单结构：
-
-- **T 队管理 / CT 队管理**
-  - 添加 1 个 Bot
-  - 添加 5 个 Bot
-  - 踢出 1 个 Bot
-  - 踢出全部 Bot
-  - 杀死全部 Bot
-  - 查看 Bot 列表
-  - 返回主菜单
-- **双方总览 / 刷新**
-- **快速填充双方**（`fapb fill`）
-- **踢出全部 Bot**（`fapb kickall`）
-- **交换 T/CT**（`fapb swap`）
-- **快捷键设置**：菜单内绑定/解绑 V、N、= 键；也可用 `fapb_bind <键>` 自定义
-
-权限 Cvar：
+`fapb cmenu` 由 **fapb.dll 本身**弹出经典 1-0 数字菜单，不需要 AMXX。
+主菜单第 1 项已经改为“队伍管理”：
 
 ```text
-fapb_teams_access 1
+FAPB 主菜单
+1. 队伍管理      ← 进入队伍管理
+2. 特性
+3. 填充服务器
+4. 结束本局
+0. 退出
 ```
 
-`1` = 仅 `ADMIN_MENU` 管理员（默认）；`0` = 所有玩家可打开。
+进入“队伍管理”后：
 
-> 未安装 AMXX 时仍可使用 FAPB 内置菜单 `fapb cmenu`；内置菜单没有
-> 独立的 T/CT 分队列子菜单。
+```text
+FAPB 队伍管理
+1. 快速添加 Bot（随机队伍）
+2. 添加 Bot（选择 T/CT）  → 1 恐怖分子 / 2 反恐精英 / 5 自动
+3. 随机踢出 1 个 Bot
+4. 踢出全部 Bot
+5. 踢出指定 Bot（列表）
+0. 退出
+```
+
+绑定按键（客户端控制台执行一次）：
+
+```text
+bind v "fapb cmenu"
+```
+
+然后按 `V` → `1` 进入队伍管理。`fapb.cfg` 中也已经写入同样的
+`bind "v" "fapb cmenu"`。
+
+菜单本身仍受 FAPB 口令保护：
+
+```text
+fb_password_key "_fbpw"
+fb_password     "thebot"
+```
+
+聊天框输入 `_fbpw thebot`，或用 rcon 执行 `fapb cmenu`。
+
+> 这是 fapb.dll 自带的原生菜单（只改了中文标签/快捷键），不是新写的
+> T/CT 仪表盘。新增独立 T/CT 子菜单需要重新编译 YAPB 源码。
 
 ---
 
@@ -214,7 +216,6 @@ addon/                 可直接安装的 FAPB 插件（不含 wptdefault）
   install_fapb.ps1     安装脚本
   README_FAPB.txt      详细中文说明
   BUILD_INFO.txt       版本与哈希
-  amxx/                可选 AMXX 队伍管理菜单（.amxx + 源码）
 tools/                 二进制级构建工具与原始 YAPB 样本
   artifacts/           原始 yapb.dll、两份内存 dump、原始配置
   make_dumpme.py       让 UPX 解包后跳过 DllMain
@@ -224,7 +225,7 @@ tools/                 二进制级构建工具与原始 YAPB 样本
 docs/COMMANDS.md       命令 / Cvar 参考
 ```
 
-完整航点包在 Release 的 `FAPB_1.3.zip` 中。
+完整航点包在 Release 的 `FAPB_1.4.zip` 中。
 
 ---
 
@@ -241,9 +242,8 @@ docs/COMMANDS.md       命令 / Cvar 参考
 
 AI 代码、瞄准参数、行为逻辑均未修改。构建脚本见 [tools/README.md](tools/README.md)。
 
-AMXX 队伍菜单源码在 `addon/amxx/fapb_teams.sma`，使用 AMX Mod X
-1.8.1-300 编译器 + 1.8.1 include 编译；命令与 Cvar 见
-[docs/COMMANDS.md](docs/COMMANDS.md)。
+原生队伍菜单使用 fapb.dll 内置的 `fapb cmenu`，只改了中文标签和
+`fapb.cfg` 中的 V 键绑定，不需要 AMXX。
 
 复现构建：
 

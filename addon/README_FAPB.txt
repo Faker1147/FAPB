@@ -1,5 +1,5 @@
 ======================================================================
- FAPB 1.0 —— Counter-Strike 1.6 第三方人机
+ FAPB 1.1 —— Counter-Strike 1.6 第三方人机
  核心：YAPB 2.55b（枪法 / 瞄准 / 行为逻辑完整保留）
 ======================================================================
 
@@ -29,10 +29,13 @@ cstrike/addons/fapb/
   config/general.cfg            性格、经济、技能参数
   config/chatter.cfg            Bot 聊天语句
   config/language/*.cfg         中/英/德文菜单与聊天语言
-  wptdefault/                   YAPB 格式航点（94 张地图，455 个文件）
+  wptdefault/                   YAPB 格式航点（.pwf，455 个文件）
   README_FAPB.txt               本说明
   plugins.ini.example           Metamod 加载示例
   install_fapb.ps1              一键安装脚本（可选）
+  amxx/fapb_teams.amxx          可选 AMXX 队伍管理菜单
+  amxx/fapb_teams.sma           菜单源码（UTF-8）
+  amxx/README.txt               菜单安装说明
 
 三、安装（手动）
 ----------------------------------------------------------------------
@@ -53,6 +56,7 @@ cstrike/addons/fapb/
    能看到 FAPB 即加载成功。
 
 也可以运行 install_fapb.ps1 自动复制并修改 plugins.ini（会先备份）。
+如果服务器安装了 AMXX，脚本还会安装 fapb_teams.amxx 队伍管理菜单。
 
 四、独立命令菜单
 ----------------------------------------------------------------------
@@ -66,6 +70,31 @@ cstrike/addons/fapb/
   fb_password     "thebot"
 聊天框输入口令（默认 _fbpw thebot）可获得菜单权限；也可以直接用
 rcon 执行 fapb cmenu。修改口令后记得同步修改 fb_password。
+
+  【AMXX 队伍管理菜单】
+  fapb_teams        打开独立的队伍管理菜单（控制台）
+  say /fapbteams    聊天打开菜单
+  amx_fapb_teams    服务器控制台 / rcon，打印双方 Bot 列表
+
+  菜单包含：
+    T 队管理 / CT 队管理
+      添加 1 个 Bot / 添加 5 个 Bot
+      踢出 1 个 Bot / 踢出全部 Bot
+      杀死全部 Bot
+      查看 Bot 列表
+      返回主菜单
+    双方总览 / 刷新
+    快速填充双方（fapb fill）
+    踢出全部 Bot（fapb kickall）
+    交换 T/CT（fapb swap）
+
+  权限 Cvar：
+    fapb_teams_access 1   1 = 仅 ADMIN_MENU 管理员（默认）
+                          0 = 所有玩家都可以打开
+
+  安装：install_fapb.ps1 会自动把 fapb_teams.amxx 复制到
+  addons/amxmodx/plugins/ 并写入 AMXX 的 plugins.ini。
+  手动安装见 amxx/README.txt。
 
 五、常用命令
 ----------------------------------------------------------------------
@@ -158,7 +187,7 @@ A: 会。默认值就是 YAPB 2.55b 的原始瞄准参数；除非明确知道�
 
 九、版本与来源
 ----------------------------------------------------------------------
-FAPB 1.0
+FAPB 1.1
 核心版本：YAPB 2.55b（YaPB Dev Team，基于 PODBot 代码）
 制作方式：从 yapb.zip 的 yapb.dll 解包，重命名插件/命令/Cvar/路径，
           重建 PE 与重定位表；未改动 AI、瞄准、行为代码。

@@ -58,6 +58,40 @@ fb_password     "thebot"
 bind "=" "fapb_menu"
 ```
 
+### 2.1 队伍管理菜单（AMXX 伴侣插件）
+
+需要 AMXX，并加载 `fapb_teams.amxx`（安装脚本会自动处理）。
+
+| 命令 | 说明 |
+|---|---|
+| `fapb_teams` | 玩家控制台打开队伍管理菜单 |
+| `fapb_team` | 同上（别名） |
+| `say /fapbteams` | 聊天打开菜单 |
+| `amx_fapb_teams` | 服务器控制台 / rcon，打印双方 Bot 列表 |
+
+权限 Cvar：
+
+```text
+fapb_teams_access 1   ; 1 = ADMIN_MENU 管理员（默认），0 = 所有玩家
+```
+
+菜单项：
+
+- T 队管理 / CT 队管理
+  - 添加 1 个 Bot
+  - 添加 5 个 Bot
+  - 踢出 1 个 Bot
+  - 踢出全部 Bot
+  - 杀死全部 Bot
+  - 查看 Bot 列表
+  - 返回主菜单
+- 双方总览 / 刷新
+- 快速填充双方（`fapb fill`）
+- 踢出全部 Bot（`fapb kickall`）
+- 交换 T/CT（`fapb swap`）
+
+> 该插件只调用 `fapb` 服务器命令，不修改 FAPB 的 AI 或瞄准参数。
+
 ## 3. 航点 / 路径
 
 | 命令 | 说明 |

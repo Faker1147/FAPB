@@ -17,6 +17,8 @@
 - **独立 Cvar**：全部为 `fb_*`，不会与 YAPB 的 `yb_*` 冲突。
 - **独立菜单**：`fapb cmenu`、`fapb wp menu`，菜单文字与标题均为 FAPB。
 - **独立配置/航点**：`addons/fapb/config/`、`addons/fapb/wptdefault/`。
+- **独立队伍管理菜单**：`fapb_teams`（AMXX 伴侣插件），T/CT 分队列管理、
+  添加/踢出/杀死 Bot、查看列表、填充、交换队伍。
 - **可与 YAPB / SYPB 共存安装**：不覆盖对方文件，命令/Cvar 命名空间隔离。
 
 > 运行层面同一时间只能启用一套 Bot 核心（FAPB、YAPB、SYPB 任选其一）。
@@ -28,7 +30,7 @@
 
 ### 方式 A：完整包（推荐）
 
-从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.0.zip**，解压后把 `fapb` 文件夹放到：
+从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.1.zip**，解压后把 `fapb` 文件夹放到：
 
 ```text
 <游戏根目录>\cstrike\addons\fapb
@@ -64,6 +66,11 @@ fapb version
 3. 按上面的 `plugins.ini` 配置加载。
 
 也可以直接运行 `addon/install_fapb.ps1`（需要 PowerShell，脚本会备份 `plugins.ini`）。
+
+如果服务器安装了 AMXX，脚本还会自动安装 `fapb_teams.amxx` 到
+`cstrike/addons/amxmodx/plugins/` 并写入 AMXX 的 `configs/plugins.ini`。
+手动安装：把 `addon/amxx/fapb_teams.amxx` 复制到 AMXX 的 `plugins/`，
+再在 `configs/plugins.ini` 末尾加一行 `fapb_teams.amxx`，重开地图。
 
 ---
 
@@ -102,6 +109,42 @@ fb_password     "thebot"
 ```
 
 聊天框输入 `_fbpw thebot` 获取菜单权限，或直接用 rcon 执行 `fapb cmenu`。
+
+### 队伍管理菜单（AMXX）
+
+安装 `fapb_teams.amxx` 后可使用独立的队伍管理菜单：
+
+```text
+fapb_teams         玩家控制台打开
+say /fapbteams     聊天打开
+amx_fapb_teams     服务器控制台 / rcon，打印双方 Bot 列表
+```
+
+菜单结构：
+
+- **T 队管理 / CT 队管理**
+  - 添加 1 个 Bot
+  - 添加 5 个 Bot
+  - 踢出 1 个 Bot
+  - 踢出全部 Bot
+  - 杀死全部 Bot
+  - 查看 Bot 列表
+  - 返回主菜单
+- **双方总览 / 刷新**
+- **快速填充双方**（`fapb fill`）
+- **踢出全部 Bot**（`fapb kickall`）
+- **交换 T/CT**（`fapb swap`）
+
+权限 Cvar：
+
+```text
+fapb_teams_access 1
+```
+
+`1` = 仅 `ADMIN_MENU` 管理员（默认）；`0` = 所有玩家可打开。
+
+> 未安装 AMXX 时仍可使用 FAPB 内置菜单 `fapb cmenu`；内置菜单没有
+> 独立的 T/CT 分队列子菜单。
 
 ---
 
@@ -166,6 +209,7 @@ addon/                 可直接安装的 FAPB 插件（不含 wptdefault）
   install_fapb.ps1     安装脚本
   README_FAPB.txt      详细中文说明
   BUILD_INFO.txt       版本与哈希
+  amxx/                可选 AMXX 队伍管理菜单（.amxx + 源码）
 tools/                 二进制级构建工具与原始 YAPB 样本
   artifacts/           原始 yapb.dll、两份内存 dump、原始配置
   make_dumpme.py       让 UPX 解包后跳过 DllMain
@@ -175,7 +219,7 @@ tools/                 二进制级构建工具与原始 YAPB 样本
 docs/COMMANDS.md       命令 / Cvar 参考
 ```
 
-完整航点包在 Release 的 `FAPB_1.0.zip` 中。
+完整航点包在 Release 的 `FAPB_1.1.zip` 中。
 
 ---
 
@@ -191,6 +235,10 @@ docs/COMMANDS.md       命令 / Cvar 参考
 5. 从原始 YAPB 配置生成 `fb_*` 配置。
 
 AI 代码、瞄准参数、行为逻辑均未修改。构建脚本见 [tools/README.md](tools/README.md)。
+
+AMXX 队伍菜单源码在 `addon/amxx/fapb_teams.sma`，使用 AMX Mod X
+1.8.1-300 编译器 + 1.8.1 include 编译；命令与 Cvar 见
+[docs/COMMANDS.md](docs/COMMANDS.md)。
 
 复现构建：
 

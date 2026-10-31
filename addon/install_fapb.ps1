@@ -2,17 +2,19 @@
 # Usage:
 #   powershell -ExecutionPolicy Bypass -File .\install_fapb.ps1
 #   powershell -ExecutionPolicy Bypass -File .\install_fapb.ps1 -GameDir "D:\Games\CS1.6训练版V5"
-#   powershell -ExecutionPolicy Bypass -File .\install_fapb.ps1 -KeepYapb
+#   powershell -ExecutionPolicy Bypass -File .\install_fapb.ps1 -KeepOtherBots
 #
 # This script works in two layouts:
 #   1. inside the FAPB addon folder: ...\addons\fapb\install_fapb.ps1
 #   2. at the package root next to a "fapb" folder
 #
-# By default it comments out the YAPB plugin line, because loading two bot
-# cores (FAPB + YAPB) at the same time is not supported.
+# By default it comments out other bot cores (YAPB, SYPB, PODBot, EBot,
+# CSBot Enabler) and the duplicate AMXX binary-logging module, because
+# loading more than one bot core at the same time crashes fapb.dll.
 
 param(
     [string]$GameDir = "",
+    [switch]$KeepOtherBots,
     [switch]$KeepYapb
 )
 
@@ -64,28 +66,49 @@ Write-Host "Backup: $backup"
 
 $lines = Get-Content -LiteralPath $plugins
 $out = New-Object System.Collections.Generic.List[string]
+$disabledBots = 0
+$hasAmxxMain = [bool]($lines | Where-Object { $_ -match '^\s*win32\s+addons[\\/]amxmodx[\\/]dlls[\\/]amxmodx_mm\.dll' })
 
 foreach ($line in $lines) {
     if ($line -match '^\s*win32\s+addons[\\/]fapb[\\/]dlls[\\/]fapb\.dll') {
         continue
     }
-    if ($line -match '^\s*win32\s+addons[\\/]yapb[\\/]dlls[\\/]yapb\.dll') {
-        if (-not $KeepYapb) {
+
+    # Keep only ONE bot core. FAPB + YAPB/SYPB/PODBot/EBot/CSBot at the same
+    # time corrupts the Metamod hook chain and crashes fapb.dll.
+    if ($line -match '^\s*win32\s+addons[\\/](yapb|sypb|podbot|ebot|csbot_enabler)[\\/]') {
+        if (-not $KeepOtherBots) {
             $out.Add("; " + $line)
+            $disabledBots++
             continue
         }
     }
+
+    if ($line -match '^\s*Enable this instead') {
+        $out.Add("; " + $line)
+        continue
+    }
+
+    # amxmodx_mm + amxmodx_bl_mm both loaded is also a conflict.
+    if ($hasAmxxMain -and $line -match '^\s*win32\s+addons[\\/]amxmodx[\\/]dlls[\\/]amxmodx_bl_mm\.dll') {
+        $out.Add("; " + $line)
+        $disabledBots++
+        continue
+    }
+
     $out.Add($line)
 }
 
 $out.Add("win32 addons/fapb/dlls/fapb.dll")
 Set-Content -LiteralPath $plugins -Value $out -Encoding ASCII
 
-if (-not $KeepYapb) {
-    Write-Host "YAPB line commented out. FAPB will be the active bot core."
-} else {
-    Write-Warning "KeepYapb was specified: YAPB and FAPB are both enabled."
-    Write-Warning "Loading two bot cores at the same time is NOT supported."
+if ($disabledBots -gt 0) {
+    Write-Warning "Disabled $disabledBots conflicting bot/AMXX line(s)."
+    Write-Warning "Only one bot core (FAPB) is active. See $backup for the old file."
+}
+if ($KeepOtherBots) {
+    Write-Warning "KeepOtherBots specified: other bot cores were left enabled."
+    Write-Warning "Loading FAPB together with YAPB/SYPB/PODBot/EBot WILL crash the game."
 }
 
 $liblist = Join-Path $cstrike "liblist.gam"

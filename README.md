@@ -31,7 +31,7 @@
 
 ### 方式 A：完整包（推荐）
 
-从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.5.zip**，解压后把 `fapb` 文件夹放到：
+从 [Releases](https://github.com/Faker1147/FAPB/releases/latest) 下载 **FAPB_1.6.zip**，解压后把 `fapb` 文件夹放到：
 
 ```text
 <游戏根目录>\cstrike\addons\fapb
@@ -186,6 +186,27 @@ YAPB、SYPB、FAPB 都属于“Bot 核心”，都会接管 Bot 管理、引擎�
 > 如果游戏目录里的“YAPB 对战/训练模式”启动器会重写 `plugins.ini`，
 > 启动后请检查是否又把 `yapb.dll` 启用了。
 
+### 闪退排查
+
+如果 `hl.exe` 崩溃且 Windows 事件日志显示模块为 `fapb.dll`，
+错误偏移为 `0x18173`、异常代码 `0xc0000005`，通常不是菜单本身，
+而是**同时加载了多套 Bot 核心**：
+
+- YAPB / SYPB / PODBot / EBot / CSBot Enabler
+- AMXX 的 `amxmodx_mm.dll` 与 `amxmodx_bl_mm.dll` 同时加载
+
+这会让 FAPB 的 Hook 链初始化不完整，运行时指针保持 NULL，按菜单时崩溃。
+请只保留：
+
+```ini
+win32 addons/amxmodx/dlls/amxmodx_mm.dll
+win32 addons/fapb/dlls/fapb.dll
+```
+
+FAPB 1.6 的 `install_fapb.ps1` 会自动注释其他 Bot 核心和重复的
+`amxmodx_bl_mm.dll`。详细说明见
+[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)。
+
 ---
 
 ## 实测
@@ -226,7 +247,7 @@ tools/                 二进制级构建工具与原始 YAPB 样本
 docs/COMMANDS.md       命令 / Cvar 参考
 ```
 
-完整航点包在 Release 的 `FAPB_1.5.zip` 中。
+完整航点包在 Release 的 `FAPB_1.6.zip` 中。
 
 ---
 
